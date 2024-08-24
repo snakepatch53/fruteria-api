@@ -28,7 +28,7 @@ class SaleController extends Controller
 
         $validator = Validator::make($request->all(),  [
             'total' => 'required|numeric',
-            'customer_id' => 'required|exists:customer,id',
+            'customer_id' => 'required|exists:customers,id',
         ], [
             'total.required' => 'El campo total es requerido',
             'total.numeric' => 'El campo total debe ser un número',

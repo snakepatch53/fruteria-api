@@ -30,8 +30,8 @@ class ComboSaleController extends Controller
         $validator = Validator::make($request->all(),  [
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
-            'sale_id' => 'required|exists:sale,id',
-            'combo_id' => 'required|exists:combo,id',
+            'sale_id' => 'required|exists:sales,id',
+            'combo_id' => 'required|exists:combos,id',
         ], [
             'quantity.required' => 'El campo cantidad es requerido',
             'quantity.numeric' => 'El campo cantidad debe ser un número',
@@ -94,8 +94,8 @@ class ComboSaleController extends Controller
         $validator = Validator::make($request->all(),  [
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
-            'sale_id' => 'required|exists:sale,id',
-            'combo_id' => 'required|exists:combo,id',
+            'sale_id' => 'required|exists:sales,id',
+            'combo_id' => 'required|exists:combos,id',
         ], [
             'quantity.required' => 'El campo cantidad es requerido',
             'quantity.numeric' => 'El campo cantidad debe ser un número',
