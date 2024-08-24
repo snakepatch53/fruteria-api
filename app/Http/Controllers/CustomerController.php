@@ -108,8 +108,8 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
-        $customer->load(['sale']);
-        if ($customer->sale->count() > 0) {
+        $customer->load(['sales']);
+        if ($customer->sales->count() > 0) {
             return response()->json([
                 "success" => false,
                 "message" => "No se puede eliminar el recurso, tiene otros recursos asociados",

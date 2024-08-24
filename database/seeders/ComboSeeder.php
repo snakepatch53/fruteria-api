@@ -13,6 +13,8 @@ class ComboSeeder extends Seeder
     {
         Combo::factory()
             ->count(3)
+            // add combo products
+            ->hasComboProducts(5)
             ->create();
     }
 }
