@@ -15,12 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
 
-    Route::post('login', [UserController::class, 'login']);
-
     Route::middleware('auth:sanctum')->group(function () {
         // users
         Route::resource('users', UserController::class);
         Route::post('logout', [UserController::class, 'logout']);
+        Route::post('exist-session', [UserController::class, 'existSession']);
 
         // customers
         Route::resource('customers', CustomerController::class)->except(['index', 'store', 'update']);
@@ -44,6 +43,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('combo-sales', ComboSaleController::class)->except(['store']);
     });
 
+    // users
+    Route::post('login', [UserController::class, 'login']);
 
     // customers
     Route::resource('customers', CustomerController::class)->only(['index', 'store', 'update']);

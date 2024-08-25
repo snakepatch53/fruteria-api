@@ -64,6 +64,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function existSession()
+    {
+        $id = Auth::id();
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                "success" => false,
+                "message" => "No hay sesión iniciada",
+                "errors" => null,
+                "data" => null
+            ]);
+        }
+        return response()->json([
+            "success" => true,
+            "message" => "Sesión iniciada",
+            "errors" => null,
+            "data" => $user
+        ]);
+    }
+
     public function index()
     {
         return response()->json([
@@ -104,9 +124,6 @@ class UserController extends Controller
             ]);
         }
 
-
-
-
         if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
 
         $request->merge(["confirmation_code" => md5($request->email)]);
@@ -127,15 +144,11 @@ class UserController extends Controller
 
     public function show(Request $request, User $user)
     {
-        $includes = [];
-        if ($request->query('includeBusinesses')) $includes[] = 'businesses';
-        if ($request->query('includeCarts')) $includes[] = 'carts';
-
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
             "errors" => null,
-            "data" => $user->load($includes),
+            "data" => $user
         ]);
     }
 
@@ -157,17 +170,14 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(),  [
             "name" => "required|min:3|max:150",
-            "email" => "required|email|unique:users,email",
-            "password" => "required|min:8"
+            "email" => "required|email|unique:users,email," . $id
         ], [
             "name.required" => "El campo nombre es requerido",
             "name.min" => "El campo nombre debe tener al menos 3 caracteres",
             "name.max" => "El campo nombre debe tener como máximo 150 caracteres",
             "email.required" => "El campo email es requerido",
             "email.email" => "El campo email debe ser un correo electrónico válido",
-            "email.unique" => "El campo email ya está en uso",
-            "password.required" => "El campo password es requerido",
-            "password.min" => "El campo password debe tener al menos 8 caracteres"
+            "email.unique" => "El campo email ya está en uso"
         ]);
 
         if ($validator->fails()) {
@@ -175,14 +185,11 @@ class UserController extends Controller
                 "success" => false,
                 "message" => $validator->errors()->first(),
                 "errors" => $validator->errors(),
-                "data" => null
+                "data" => $request->all()
             ]);
         }
 
-
-
         if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
-
 
         $user->update($request->all());
 
@@ -197,15 +204,14 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $user->load(['businesses', 'carts']);
-        if ($user->businesses->count() > 0 || $user->carts->count() > 0) { //tiene registros asociados ?
-            return response()->json([
-                "success" => false,
-                "message" => "No se puede eliminar el recurso, tiene otros recursos asociados",
-                "data" => null
-            ]);
-        }
-
+        // $user->load(['businesses', 'carts']);
+        // if ($user->businesses->count() > 0 || $user->carts->count() > 0) { //tiene registros asociados ?
+        //     return response()->json([
+        //         "success" => false,
+        //         "message" => "No se puede eliminar el recurso, tiene otros recursos asociados",
+        //         "data" => null
+        //     ]);
+        // }
 
         $user->delete();
 
