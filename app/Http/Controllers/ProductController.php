@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    private $PHOTO_PATH = "public/img_products";
+    private $IMAGE_PATH = "public/product_img";
     private $IMAGE_TYPE = "jpg,jpeg,png";
     public function index(Request $request)
     {
@@ -40,8 +40,8 @@ class ProductController extends Controller
             'name.min' => 'El campo nombre debe tener al menos 3 caracteres',
             'description.required' => 'El campo descripción es requerido',
             'description.min' => 'El campo descripción debe tener al menos 10 caracteres',
-            'photo.file' => 'El campo foto debe ser un archivo',
-            'photo.mimes' => 'El campo foto debe ser un archivo de tipo: ' . $this->IMAGE_TYPE,
+            'image.file' => 'El campo foto debe ser un archivo',
+            'image.mimes' => 'El campo foto debe ser un archivo de tipo: ' . $this->IMAGE_TYPE,
             'price.required' => 'El campo precio es requerido',
             'price.numeric' => 'El campo precio debe ser un número',
             'sale_type.required' => 'El campo tipo de venta es requerido',
@@ -60,7 +60,7 @@ class ProductController extends Controller
 
 
         if ($request->file("image")) {
-            $fileName_photo = basename($request->file("image")->store($this->PHOTO_PATH));
+            $fileName_photo = basename($request->file("image")->store($this->IMAGE_PATH));
             $request = new Request($request->except(["image"]) + ["image" => $fileName_photo]);
         }
 
@@ -116,8 +116,8 @@ class ProductController extends Controller
             'name.min' => 'El campo nombre debe tener al menos 3 caracteres',
             'description.required' => 'El campo descripción es requerido',
             'description.min' => 'El campo descripción debe tener al menos 10 caracteres',
-            'photo.file' => 'El campo foto debe ser un archivo',
-            'photo.mimes' => 'El campo foto debe ser un archivo de tipo: ' . $this->IMAGE_TYPE,
+            'image.file' => 'El campo foto debe ser un archivo',
+            'image.mimes' => 'El campo foto debe ser un archivo de tipo: ' . $this->IMAGE_TYPE,
             'price.required' => 'El campo precio es requerido',
             'price.numeric' => 'El campo precio debe ser un número',
             'sale_type.required' => 'El campo tipo de venta es requerido',
@@ -136,9 +136,9 @@ class ProductController extends Controller
         }
 
         if ($request->file("image")) {
-            $fileName_photo = basename($request->file("image")->store($this->PHOTO_PATH));
+            $fileName_photo = basename($request->file("image")->store($this->IMAGE_PATH));
             $request = new Request($request->except(["image"]) + ["image" => $fileName_photo]);
-            if (Storage::exists($this->PHOTO_PATH . "/" . $product->photo)) Storage::delete($this->PHOTO_PATH . "/" . $product->photo);
+            if (Storage::exists($this->IMAGE_PATH . "/" . $product->photo)) Storage::delete($this->IMAGE_PATH . "/" . $product->image);
         }
 
         $product->update($request->all());
@@ -164,7 +164,7 @@ class ProductController extends Controller
         }
 
         // eliminamos tambien el archivo
-        if (Storage::exists($this->PHOTO_PATH . "/" . $product->photo)) Storage::delete($this->PHOTO_PATH . "/" . $product->photo);
+        if (Storage::exists($this->IMAGE_PATH . "/" . $product->image)) Storage::delete($this->IMAGE_PATH . "/" . $product->image);
 
         $product->delete();
 

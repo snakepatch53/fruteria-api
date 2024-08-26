@@ -11,8 +11,8 @@ class Product extends Model
 
     public static $_SALE_TYPE = [
         "libras" => "Libras",
-        "unidades" => "Unidades",
         "kilos" => "Kilos",
+        "unidades" => "Unidades",
     ];
 
     public static $_CATEGORY = [

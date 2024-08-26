@@ -11,23 +11,19 @@ class ComboProductController extends Controller
 
     public function index(Request $request)
     {
-        $include = [];
-        if ($request->query('includeProduct')) $include[] = 'product';
-        if ($request->query('includeCombo')) $include[] = 'combo';
+        $includes = [];
+        if ($request->query('includeProduct')) $includes[] = 'product';
+        if ($request->query('includeCombo')) $includes[] = 'combo';
 
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
-            "data" => ComboProduct::with($include)->get()
+            "data" => ComboProduct::with($includes)->get()
         ]);
     }
 
     public function store(Request $request)
     {
-        $includes = [];
-        if ($request->query('includeProduct')) $include[] = 'product';
-        if ($request->query('includeCombo')) $include[] = 'combo';
-
         $validator = Validator::make($request->all(),  [
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
@@ -52,6 +48,10 @@ class ComboProductController extends Controller
                 "data" => null
             ]);
         }
+
+        $includes = [];
+        if ($request->query('includeProduct')) $includes[] = 'product';
+        if ($request->query('includeCombo')) $includes[] = 'combo';
 
         $data = ComboProduct::create($request->all());
 
@@ -66,8 +66,8 @@ class ComboProductController extends Controller
     public function show(Request $request, ComboProduct $comboProduct)
     {
         $includes = [];
-        if ($request->query('includeProduct')) $include[] = 'product';
-        if ($request->query('includeCombo')) $include[] = 'combo';
+        if ($request->query('includeProduct')) $includes[] = 'product';
+        if ($request->query('includeCombo')) $includes[] = 'combo';
 
         return response()->json([
             "success" => true,
@@ -77,13 +77,8 @@ class ComboProductController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, ComboProduct $comboProduct)
     {
-        $includes = [];
-        if ($request->query('includeProduct')) $include[] = 'product';
-        if ($request->query('includeCombo')) $include[] = 'combo';
-
-        $comboProduct = ComboProduct::find($id);
         if (!$comboProduct) {
             return response()->json([
                 "success" => false,
@@ -93,18 +88,14 @@ class ComboProductController extends Controller
         }
 
         $validator = Validator::make($request->all(),  [
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'product_id' => 'required|exists:products,id',
-            'combo_id' => 'required|exists:combos,id',
+            'quantity' => 'numeric',
+            'price' => 'numeric',
+            'product_id' => 'exists:products,id',
+            'combo_id' => 'exists:combos,id',
         ], [
-            'quantity.required' => 'El campo cantidad es requerido',
             'quantity.numeric' => 'El campo cantidad debe ser un número',
-            'price.required' => 'El campo precio es requerido',
             'price.numeric' => 'El campo precio debe ser un número',
-            'product_id.required' => 'El campo producto es requerido',
             'product_id.exists' => 'El producto no existe',
-            'combo_id.required' => 'El campo combo es requerido',
             'combo_id.exists' => 'El combo no existe',
         ]);
 
@@ -116,6 +107,10 @@ class ComboProductController extends Controller
                 "data" => null
             ]);
         }
+
+        $includes = [];
+        if ($request->query('includeProduct')) $includes[] = 'product';
+        if ($request->query('includeCombo')) $includes[] = 'combo';
 
         $comboProduct->update($request->all());
 
@@ -130,16 +125,6 @@ class ComboProductController extends Controller
 
     public function destroy(ComboProduct $comboProduct)
     {
-        $comboProduct->load(['product', 'combo']);
-        if ($comboProduct->product->count() > 0 || $comboProduct->combo->count() > 0) {
-            return response()->json([
-                "success" => false,
-                "message" => "No se puede eliminar el recurso, tiene otros recursos asociados",
-                "data" => null
-            ]);
-        }
-
-
         $comboProduct->delete();
 
         return response()->json([

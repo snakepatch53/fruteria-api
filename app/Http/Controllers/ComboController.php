@@ -23,7 +23,6 @@ class ComboController extends Controller
 
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(),  [
             'name' => 'required|min:3',
             'price' => 'required|numeric',
@@ -43,51 +42,46 @@ class ComboController extends Controller
             ]);
         }
 
+        $includes = [];
+        if ($request->query('includeComboSales')) $includes[] = 'comboSales';
+        if ($request->query('includeComboProducts')) $includes[] = 'comboProducts.product';
+
         $data = Combo::create($request->all());
 
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
             "errors" => null,
-            "data" => $data
+            "data" => $data->load($includes)
         ]);
     }
 
     public function show(Request $request, Combo $combo)
     {
         $includes = [];
-        if ($request->query('includeComboSales')) $include[] = 'comboSales';
-        if ($request->query('includeComboProducts')) $include[] = 'comboProducts.product';
+        if ($request->query('includeComboSales')) $includes[] = 'comboSales';
+        if ($request->query('includeComboProducts')) $includes[] = 'comboProducts.product';
 
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
             "errors" => null,
-            "data" => $combo->load($includes),
+            "data" => $combo->load($includes)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Combo $combo)
     {
-
-
-        $combo = Combo::find($id);
-        if (!$combo) {
-            return response()->json([
-                "success" => false,
-                "message" => "Recurso no encontrado",
-                "data" => null
-            ]);
-        }
-
         $validator = Validator::make($request->all(),  [
             'name' => 'required|min:3',
             'price' => 'required|numeric',
+            'active' => 'boolean',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'name.min' => 'El campo nombre debe tener al menos 3 caracteres',
             'price.required' => 'El campo precio es requerido',
             'price.numeric' => 'El campo precio debe ser un número',
+            'active.boolean' => 'El campo activo debe ser un booleano',
 
         ]);
 
@@ -113,8 +107,8 @@ class ComboController extends Controller
 
     public function destroy(Combo $combo)
     {
-        $combo->load(['comboSales', 'comboProducts']);
-        if ($combo->ComboSales->count() > 0 || $combo->comboProducts()->count() > 0) {
+        $combo->load(['comboSales']);
+        if ($combo->ComboSales->count() > 0) {
             return response()->json([
                 "success" => false,
                 "message" => "No se puede eliminar el recurso, tiene otros recursos asociados",

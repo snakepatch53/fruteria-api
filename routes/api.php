@@ -28,7 +28,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('sales', SaleController::class)->except(['store', 'show']);
 
         // products
-        Route::resource('products', ProductController::class)->except(['index']);
+        Route::resource('products', ProductController::class)->except(['index', 'update']);
+        Route::post('products/{id}', [ProductController::class, 'update']);
 
         // product-sales
         Route::resource('product-sales', ProductSaleController::class)->except(['store']);
@@ -59,7 +60,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::resource('product-sales', ProductSaleController::class)->only(['store']);
 
     // combos
-    Route::resource('combos', ComboController::class)->except(['show']);
+    Route::resource('combos', ComboController::class)->only(['show']);
 
     // combo-sales
     Route::resource('combo-sales', ComboSaleController::class)->only(['store']);

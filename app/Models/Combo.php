@@ -12,6 +12,7 @@ class Combo extends Model
     protected $fillable = [
         'name',
         'price',
+        'active'
     ];
 
     public function comboProducts()
