@@ -35,7 +35,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('product-sales', ProductSaleController::class)->except(['store']);
 
         // combos
-        Route::resource('combos', ComboController::class)->except(['show']);
+        Route::resource('combos', ComboController::class)->except(['index', 'show']);
 
         // combo-products
         Route::resource('combo-products', ComboProductController::class);
@@ -60,7 +60,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::resource('product-sales', ProductSaleController::class)->only(['store']);
 
     // combos
-    Route::resource('combos', ComboController::class)->only(['show']);
+    Route::resource('combos', ComboController::class)->only(['index', 'show']);
 
     // combo-sales
     Route::resource('combo-sales', ComboSaleController::class)->only(['store']);
