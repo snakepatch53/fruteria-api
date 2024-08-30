@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
 
             $table->foreignId('combo_id')->constrained('combos');
-            $table->foreignId('sale_id')->constrained('sales');
+            $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
         });
     }
 

@@ -96,11 +96,15 @@ class ComboController extends Controller
 
         $combo->update($request->all());
 
+        $includes = [];
+        if ($request->query('includeComboSales')) $includes[] = 'comboSales';
+        if ($request->query('includeComboProducts')) $includes[] = 'comboProducts.product';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
             "errors" => null,
-            "data" => $combo,
+            "data" => $combo->load($includes),
             "token" => null
         ]);
     }
