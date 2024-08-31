@@ -102,7 +102,6 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(),  [
             'name' => 'required|min:3',
-            'description' => 'required|min:10',
             'image' => 'file|mimes:' . $this->IMAGE_TYPE,
             'price' => 'required|numeric',
             'sale_type' => 'required',
@@ -111,8 +110,6 @@ class ProductController extends Controller
         ], [
             'name.required' => 'El campo nombre es requerido',
             'name.min' => 'El campo nombre debe tener al menos 3 caracteres',
-            'description.required' => 'El campo descripción es requerido',
-            'description.min' => 'El campo descripción debe tener al menos 10 caracteres',
             'image.file' => 'El campo foto debe ser un archivo',
             'image.mimes' => 'El campo foto debe ser un archivo de tipo: ' . $this->IMAGE_TYPE,
             'price.required' => 'El campo precio es requerido',
